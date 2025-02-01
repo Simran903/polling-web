@@ -15,9 +15,9 @@ const generateToken = (id: string): string => {
   }
   return jwt.sign({ id }, secret, { expiresIn: "1d" });
 };
-
+ 
 // Register User
-const registerUser = async (req: AuthRequest, res: Response, next: NextFunction): Promise<Response> => {
+const signupUser = async (req: AuthRequest, res: Response, next: NextFunction): Promise<Response> => {
   const { username, email, password, profileImageUrl }: { username: string; email: string; password: string; profileImageUrl?: string } = req.body;
 
   // Validation: check for missing fields
@@ -73,4 +73,4 @@ const registerUser = async (req: AuthRequest, res: Response, next: NextFunction)
   }
 };
 
-export { registerUser };
+export { signupUser };
