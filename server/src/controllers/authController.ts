@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/UserSchema";
 
@@ -15,10 +14,24 @@ const generateToken = (id: string): string => {
   }
   return jwt.sign({ id }, secret, { expiresIn: "1d" });
 };
- 
-// Register User
-const signupUser = async (req: AuthRequest, res: Response, next: NextFunction): Promise<Response> => {
-  const { username, email, password, profileImageUrl }: { username: string; email: string; password: string; profileImageUrl?: string } = req.body;
+
+// Sign up user
+export const signupUser = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
+  const {
+    username,
+    email,
+    password,
+    profileImageUrl,
+  }: {
+    username: string;
+    email: string;
+    password: string;
+    profileImageUrl?: string;
+  } = req.body;
 
   // Validation: check for missing fields
   if (!username || !email || !password) {
@@ -29,7 +42,8 @@ const signupUser = async (req: AuthRequest, res: Response, next: NextFunction): 
   const usernameRegex: RegExp = /^[a-zA-Z0-9-]+$/;
   if (!usernameRegex.test(username)) {
     return res.status(400).json({
-      message: "Invalid username. Only alphanumeric characters and hyphens are allowed. No spaces are permitted.",
+      message:
+        "Invalid username. Only alphanumeric characters and hyphens are allowed. No spaces are permitted.",
     });
   }
 
@@ -46,15 +60,11 @@ const signupUser = async (req: AuthRequest, res: Response, next: NextFunction): 
       return res.status(400).json({ message: "Username not available" });
     }
 
-    // Hash password before saving
-    const salt: string = await bcrypt.genSalt(10);
-    const hashedPassword: string = await bcrypt.hash(password, salt);
-
     // Create user
     const user: IUser = await User.create({
       username,
       email,
-      password: hashedPassword,
+      password,
       profileImageUrl,
     });
 
@@ -64,13 +74,94 @@ const signupUser = async (req: AuthRequest, res: Response, next: NextFunction): 
       user,
       token: generateToken(user._id.toString()),
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Error registering user:", err);
     return res.status(500).json({
       message: "Error registering user",
-      error: process.env.NODE_ENV === "production" ? "Internal Server Error" : err.message,
+      error:
+        process.env.NODE_ENV === "production"
+          ? "Internal Server Error"
+          : (err as Error).message,
     });
   }
 };
 
-export { signupUser };
+// Sign in user
+export const signinUser = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, password }: { email: string; password: string } = req.body;
+
+  // Validation: check for missing fields
+  if (!email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(400).json({
+        message: "Invalid credentials",
+      });
+    }
+
+    res.status(200).json({
+      id: user._id,
+      user: {
+        ...user.toObject(),
+        totalPollsCreated: 0,
+        totalPollsVotes: 0,
+        totalPollsBookmarked: 0,
+      },
+      token: generateToken(user._id as any),
+    });
+  } catch (err: any) {
+    console.error("Error signing in:", err);
+    return res.status(500).json({
+      message: "Error signing in",
+      error:
+        process.env.NODE_ENV === "production"
+          ? "Internal Server Error"
+          : err.message,
+    });
+  }
+};
+
+// Get user info
+export const getUserInfo = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+
+  try {
+    const user = await User.findById(req?.user?.id).select("-password");
+
+    if (!user) {
+      res.status(404).json({
+        message: "User not found"
+      })
+    }
+
+    const userInfo = {
+      ...user?.toObject(),
+      totalPollsCreated: 0,
+      totalPollsVotes: 0,
+      totalPollsBookmarked: 0,
+    }
+
+    res.status(200).json(userInfo);
+
+  } catch (err: unknown) {
+    console.error("Error fetching user:", err);
+    return res.status(500).json({
+      message: "Error fetching user",
+      error:
+        process.env.NODE_ENV === "production"
+          ? "Internal Server Error"
+          : (err as Error).message,
+    });
+  }
+};
