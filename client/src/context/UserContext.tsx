@@ -1,7 +1,7 @@
+"use client";
 import React, { createContext, useState, FC, ReactNode } from "react";
 
 interface User {
-  // Define the properties of the user object as needed
   id: string;
   email: string;
   password: string;

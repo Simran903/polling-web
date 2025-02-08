@@ -7,6 +7,18 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "plus.unsplash.com"
+      },
+      {
+        protocol: "https",
+        hostname: "polling-web.onrender.com",
+      },
+      {
+        protocol: "http",
+        hostname: "polling-web.onrender.com",
+      },
     ],
   },
 };

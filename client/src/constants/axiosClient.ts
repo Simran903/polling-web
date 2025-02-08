@@ -31,7 +31,7 @@ axiosClient.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // Handle unauthorized access
       console.log('Unauthorized, logging out...');
-      window.location.href = '/signin';
+      window.location.href = '/auth/signin';
     }
     return Promise.reject(error);
   }

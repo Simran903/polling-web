@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { validateEmail } from "@/utils/helper";
 import axiosClient from "@/constants/axiosClient";
 import { API_PATHS } from "@/utils/apiPaths";
+import { UserContext } from "@/context/UserContext";
 // import { UserContext } from "@/context/UserContext";
 
 const SignIn: FC = () => {
@@ -14,6 +15,8 @@ const SignIn: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const { user, updateUser, clearUser } = useContext(UserContext);
+
 
   const router = useRouter();
   // const { updateUser } = useContext(UserContext)
@@ -49,7 +52,7 @@ const SignIn: FC = () => {
 
         if (token) {
           localStorage.setItem("token", token);
-          // updateUser(user);
+          updateUser(user);
           router.push('/dashboard')
         }
       }
