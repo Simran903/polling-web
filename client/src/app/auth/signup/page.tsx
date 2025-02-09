@@ -88,7 +88,7 @@ const SignUp = () => {
       <div className="flex w-full">
         <div className="flex w-full h-screen space-x-20">
           {/* Left Section - Sign Up Form */}
-          <div className="w-1/2 p-24 my-auto">
+          <div className="w-full lg:w-1/2 lg:p-24 my-auto">
             <div className="shadow-xl p-12">
               <h2 className="text-primary-a40 text-4xl font-semibold mb-3">
                 Create an Account
@@ -184,7 +184,7 @@ const SignUp = () => {
           </div>
 
           {/* Right Section - Full-Screen Image */}
-          <div className="w-3/4 relative">
+          <div className="w-3/4 relative hidden lg:block">
             <Image
               src="https://images.unsplash.com/photo-1720128401458-5e855a8dabb6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHBvbGxpbmclMjBzdGF0aW9ufGVufDB8fDB8fHww"
               alt="image"
