@@ -5,7 +5,7 @@ import { useUserAuth } from '@/hooks/useUserAuth'
 
 const Dashboard = () => {
 
-  useUserAuth();
+  // useUserAuth();
 
   return (
     <div>
