@@ -84,7 +84,7 @@ export const getAllPolls = async (req: Request, res: Response): Promise<Response
   try {
     const { type, creatorId, page = 1, limit = 10 } = req.query;
     
-    const userId = req.user?._id; // Ensure userId is retrieved safely
+    const userId = req.body
 
     const filter: any = {};
     if (type) filter.type = type;
@@ -164,79 +164,79 @@ export const getAllPolls = async (req: Request, res: Response): Promise<Response
 };
 
 
-export const getVotedPolls = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    // Implementation here 
-  } catch (err: any) {
-    return res.status(500).json({
-      message: "Error fetching polls",
-      error: err.message,
-    });
-  }
-}
+// export const getVotedPolls = async (req: Request, res: Response): Promise<Response> => {
+//   try {
+//     // Implementation here 
+//   } catch (err: any) {
+//     return res.status(500).json({
+//       message: "Error fetching polls",
+//       error: err.message,
+//     });
+//   }
+// }
 
-export const getPollById = async (req: Request, res: Response): Promise<Response> => {
-  try {
+// export const getPollById = async (req: Request, res: Response): Promise<Response> => {
+//   try {
 
-  } catch (err: any) {
-    return res.status(500).json({
-      message: "Error fetching polls",
-      error: err.message,
-    });
-  }
-}
+//   } catch (err: any) {
+//     return res.status(500).json({
+//       message: "Error fetching polls",
+//       error: err.message,
+//     });
+//   }
+// }
 
-export const voteOnPoll = async (req: Request, res: Response): Promise<Response> => {
-  try {
+// export const voteOnPoll = async (req: Request, res: Response): Promise<Response> => {
+//   try {
 
-  } catch (err: any) {
-    return res.status(500).json({
-      message: "Error fetching polls",
-      error: err.message,
-    });
-  }
-}
+//   } catch (err: any) {
+//     return res.status(500).json({
+//       message: "Error fetching polls",
+//       error: err.message,
+//     });
+//   }
+// }
 
-export const closePoll = async (req: Request, res: Response): Promise<Response> => {
-  try {
+// export const closePoll = async (req: Request, res: Response): Promise<Response> => {
+//   try {
 
-  } catch (err: any) {
-    return res.status(500).json({
-      message: "Error fetching polls",
-      error: err.message,
-    });
-  }
-}
+//   } catch (err: any) {
+//     return res.status(500).json({
+//       message: "Error fetching polls",
+//       error: err.message,
+//     });
+//   }
+// }
 
-export const bookmarkPoll = async (req: Request, res: Response): Promise<Response> => {
-  try {
+// export const bookmarkPoll = async (req: Request, res: Response): Promise<Response> => {
+//   try {
 
-  } catch (err: any) {
-    return res.status(500).json({
-      message: "Error fetching polls",
-      error: err.message,
-    });
-  }
-}
+//   } catch (err: any) {
+//     return res.status(500).json({
+//       message: "Error fetching polls",
+//       error: err.message,
+//     });
+//   }
+// }
 
-export const getBookmarkedPolls = async (req: Request, res: Response): Promise<Response> => {
-  try {
+// export const getBookmarkedPolls = async (req: Request, res: Response): Promise<Response> => {
+//   try {
 
-  } catch (err: any) {
-    return res.status(500).json({
-      message: "Error fetching polls",
-      error: err.message,
-    });
-  }
-}
+//   } catch (err: any) {
+//     return res.status(500).json({
+//       message: "Error fetching polls",
+//       error: err.message,
+//     });
+//   }
+// }
 
-export const deletePoll = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    // Implementation here 
-  } catch (err: any) {
-    return res.status(500).json({
-      message: "Error fetching polls",
-      error: err.message,
-    });
-  }
-}
+// export const deletePoll = async (req: Request, res: Response): Promise<Response> => {
+//   try {
+//     // Implementation here 
+//   } catch (err: any) {
+//     return res.status(500).json({
+//       message: "Error fetching polls",
+//       error: err.message,
+//     });
+//   }
+// }
