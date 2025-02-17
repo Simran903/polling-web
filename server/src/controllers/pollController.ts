@@ -172,17 +172,47 @@ export const getAllPolls = async (req: Request, res: Response): Promise<Response
   }
 };
 
+export const getVotedPolls = async (req: Request, res: Response): Promise<Response> => {
+  const { page = "1", limit = "10" } = req.query as { page?: string; limit?: string };
+  const userId: string = req.body;
+  try {
+    const pageNumber: number = parseInt(page, 10);
+    const pageSize: number = parseInt(limit, 10);
+    const skip: number = (pageNumber - 1) * pageSize;
 
-// export const getVotedPolls = async (req: Request, res: Response): Promise<Response> => {
-//   try {
-//     // Implementation here 
-//   } catch (err: any) {
-//     return res.status(500).json({
-//       message: "Error fetching polls",
-//       error: err.message,
-//     });
-//   }
-// }
+    const polls: Array<any> = await Poll.find({ voters: userId })
+      .populate("creator", "username email profileImageUrl")
+      .populate({
+        path: "responses.voterId",
+        select: "username profileImageUrl"
+      })
+      .skip(skip)
+      .limit(pageSize);
+
+    const updatedPolls: Array<any> = polls.map((poll) => {
+      const userHasVoted: boolean = poll.voters.some((voterId: any) => voterId.equals(userId));
+      return {
+        ...poll.toObject(),
+        userHasVoted,
+      };
+    });
+
+    const totalVotedPolls: number = await Poll.countDocuments({ voters: userId });
+
+    return res.status(200).json({
+      polls: updatedPolls,
+      currentPage: pageNumber,
+      totalPages: Math.ceil(totalVotedPolls / pageSize),
+      totalVotedPolls,
+    });
+
+  } catch (err: any) {
+    return res.status(500).json({
+      message: "Error fetching polls",
+      error: err.message,
+    });
+  }
+}
 
 // export const getPollById = async (req: Request, res: Response): Promise<Response> => {
 //   try {
