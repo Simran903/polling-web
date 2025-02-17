@@ -7,6 +7,15 @@ interface Option {
   votes?: number;
 }
 
+interface Poll {
+  closed: boolean;
+  voters: string[];
+  type: string;
+  responses: { voterId: string; responseText: string }[];
+  options: { votes: number }[];
+  save: () => Promise<void>;
+}
+
 export const createPoll = async (req: Request, res: Response): Promise<Response> => {
   const { question, type, options, creatorId }:
     { question: string; type: string; options?: string[]; creatorId: string } = req.body;
@@ -186,16 +195,56 @@ export const getAllPolls = async (req: Request, res: Response): Promise<Response
 //   }
 // }
 
-// export const voteOnPoll = async (req: Request, res: Response): Promise<Response> => {
-//   try {
+export const voteOnPoll = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params;
+  const { optionIndex, voterId, responseText }: { optionIndex?: number; voterId: string; responseText?: string } = req.body;
 
-//   } catch (err: any) {
-//     return res.status(500).json({
-//       message: "Error fetching polls",
-//       error: err.message,
-//     });
-//   }
-// }
+  try {
+    const poll: Poll | null = await Poll.findById(id);
+    if (!poll) {
+      return res.status(400).json({
+        message: "Poll not found"
+      });
+    }
+    if (poll.closed) {
+      return res.status(400).json({
+        message: "Poll is closed"
+      });
+    }
+    if (poll.voters.includes(voterId)) {
+      return res.status(400).json({
+        message: "User has already voted on this poll"
+      });
+    }
+    if (poll.type === "open-ended") {
+      if (!responseText) {
+        return res.status(400).json({
+          message: "Response text is required for open-ended polls"
+        });
+      }
+      poll.responses.push({ voterId, responseText });
+    } else {
+      if (optionIndex === undefined ||
+        optionIndex < 0 ||
+        optionIndex >= poll.options.length
+      ) {
+        return res.status(400).json({
+          message: "Invalid option index"
+        });
+      }
+      poll.options[optionIndex].votes += 1;
+    }
+    poll.voters.push(voterId);
+    await poll.save();
+
+    return res.status(200).json(poll);
+  } catch (err: any) {
+    return res.status(500).json({
+      message: "Error fetching polls",
+      error: err.message,
+    });
+  }
+}
 
 // export const closePoll = async (req: Request, res: Response): Promise<Response> => {
 //   try {
