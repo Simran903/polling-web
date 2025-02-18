@@ -178,7 +178,7 @@ export const getVotedPolls = async (req: AuthRequest, res: Response): Promise<Re
   const { page = "1", limit = "10" } = req.query as { page?: string; limit?: string };
 
   // Get userId from req.user instead of req.body
-  const userId = req.user?.id; 
+  const userId = req.user?.id;
 
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(400).json({ message: "Invalid or missing userId" });
@@ -216,16 +216,25 @@ export const getVotedPolls = async (req: AuthRequest, res: Response): Promise<Re
   }
 };
 
-// export const getPollById = async (req: Request, res: Response): Promise<Response> => {
-//   try {
+export const getPollById = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params;
+  try {
+    const poll = await Poll.findById(id).populate("creator", "username email");
 
-//   } catch (err: any) {
-//     return res.status(500).json({
-//       message: "Error fetching polls",
-//       error: err.message,
-//     });
-//   }
-// }
+    if (!poll) {
+      return res.status(404).json({
+        message: "Poll not found"
+      });
+    }
+
+    return res.status(200).json(poll);
+  } catch (err: any) {
+    return res.status(500).json({
+      message: "Error fetching polls",
+      error: err.message,
+    });
+  }
+}
 
 export const voteOnPoll = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params;
