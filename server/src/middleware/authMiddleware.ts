@@ -3,8 +3,8 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import User, { IUser } from "../models/UserSchema";
 
 // Define a typed AuthRequest with user property
-interface AuthRequest extends Request {
-  user?: Omit<IUser, "password">; // Exclude password from user object
+export interface AuthRequest extends Request {
+  user?: Omit<IUser, "password">;
 }
 
 export const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {

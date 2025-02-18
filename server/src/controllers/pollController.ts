@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Poll from "../models/PollSchema";
 import User from "../models/UserSchema";
+import mongoose from "mongoose";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 interface Option {
   optionText: string;
@@ -92,7 +94,7 @@ export const createPoll = async (req: Request, res: Response): Promise<Response>
 export const getAllPolls = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { type, creatorId, page = 1, limit = 10 } = req.query;
-    
+
     const userId = req.body
 
     const filter: any = {};
@@ -172,12 +174,14 @@ export const getAllPolls = async (req: Request, res: Response): Promise<Response
   }
 };
 
-export const getVotedPolls = async (req: Request, res: Response): Promise<Response> => {
+export const getVotedPolls = async (req: AuthRequest, res: Response): Promise<Response> => {
   const { page = "1", limit = "10" } = req.query as { page?: string; limit?: string };
-  const userId: string = req.body.userId;
 
-  if (!userId) {
-    return res.status(400).json({ message: "User ID is required" });
+  // Get userId from req.user instead of req.body
+  const userId = req.user?.id; 
+
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: "Invalid or missing userId" });
   }
 
   try {
@@ -211,7 +215,6 @@ export const getVotedPolls = async (req: Request, res: Response): Promise<Respon
     });
   }
 };
-
 
 // export const getPollById = async (req: Request, res: Response): Promise<Response> => {
 //   try {

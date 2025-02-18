@@ -19,6 +19,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 )
+app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 5000;
 
