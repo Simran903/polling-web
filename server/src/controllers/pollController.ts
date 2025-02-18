@@ -287,16 +287,35 @@ export const voteOnPoll = async (req: Request, res: Response): Promise<Response>
   }
 }
 
-// export const closePoll = async (req: Request, res: Response): Promise<Response> => {
-//   try {
+export const closePoll = async (req: AuthRequest, res: Response): Promise<Response> => {
+  const { id } = req.params;
+  const userId = req.user?.id; // Fix: Use optional chaining to avoid undefined errors
 
-//   } catch (err: any) {
-//     return res.status(500).json({
-//       message: "Error fetching polls",
-//       error: err.message,
-//     });
-//   }
-// }
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid poll ID" });
+  }
+
+  try {
+    const poll = await Poll.findById(id);
+    if (!poll) {
+      return res.status(404).json({ message: "Poll not found" });
+    }
+
+    if (!userId || poll.creator.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "You are not authorized to close this poll" });
+    }
+
+    poll.closed = true;
+    await poll.save();
+
+    return res.status(200).json({ message: "Poll closed successfully", poll });
+  } catch (err: any) {
+    return res.status(500).json({
+      message: "Error closing poll",
+      error: err.message,
+    });
+  }
+};
 
 // export const bookmarkPoll = async (req: Request, res: Response): Promise<Response> => {
 //   try {
