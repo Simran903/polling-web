@@ -16,7 +16,7 @@ const UserDetailsCard: FC<UserDetailsCardProps> = ({
   totalPollsCreated,
   totalPollsBookmarked,
 }) => {
-  console.log(profileImageUrl);
+  // console.log(profileImageUrl);
 
   return (
     <div className='bg-surface-a10 rounded-lg mt-16 overflow-hidden p-5'>

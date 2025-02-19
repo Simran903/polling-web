@@ -4,8 +4,9 @@ const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   timeout: 100000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 // request interceptor
