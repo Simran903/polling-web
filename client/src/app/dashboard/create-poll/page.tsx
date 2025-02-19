@@ -5,7 +5,12 @@ import { UserContext } from '@/context/UserContext';
 import { POLL_TYPE } from '@/utils/data';
 import OptionInput from '@/components/OptionInput';
 import OptionImageSelector from '@/components/OptionImageSelector';
-import Button from '@/components/Button';
+// import Button from '@/components/Button';
+import uploadImage from '@/utils/uploadImage';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axiosClient from '@/constants/axiosClient';
+import { API_PATHS } from '@/utils/apiPaths';
 
 interface ImageItem {
   base64: string;
@@ -21,7 +26,7 @@ interface PollData {
 }
 
 const CreatePoll: FC = () => {
-  const { user }: { user: any } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const [pollData, setPollData] = useState<PollData>({
     question: "",
@@ -37,6 +42,44 @@ const CreatePoll: FC = () => {
       [key]: value,
     }));
   };
+
+  const clearData = () => {
+    setPollData({
+      question: "",
+      type: "",
+      options: [],
+      imageOptions: [],
+      error: "",
+    })
+  }
+
+  const updateImageAndGetLink = async (imageOptions: { file: File }[]): Promise<string[]> => {
+    const optionPromises: Promise<string>[] = imageOptions.map(async (imageOption) => {
+      try {
+        const imageUploadRes: { imageUrl?: string } = await uploadImage(imageOption.file);
+        return imageUploadRes.imageUrl || "";
+      } catch (error) {
+        toast.error(`Error uploading image: ${imageOption.file.name}`);
+        return "";
+      }
+    });
+    const optionArr = await Promise.all(optionPromises);
+    return optionArr;
+  }
+
+  const getOptions = async () => {
+    switch (pollData.type) {
+      case "single-choice":
+        return pollData.options;
+
+      case "image-based":
+        const options = await updateImageAndGetLink(pollData.imageOptions)
+        return options;
+
+      default:
+        return [];
+    }
+  }
 
   const handleCreatePoll = async () => {
     const { question, type, options, error, imageOptions } = pollData;
@@ -56,8 +99,43 @@ const CreatePoll: FC = () => {
     }
 
     handleValueChange("error", "");
-    console.log("NO_ERR", {pollData});
-    
+    // console.log("NO_ERR", { pollData });
+
+    const optionData = await getOptions();
+
+    try {
+      const token = user?.token || localStorage.getItem("token"); 
+
+      const response = await axiosClient.post(
+        API_PATHS.POLLS.CREATE,
+        {
+          question,
+          type,
+          options: optionData,
+          creatorId: user._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // This requires backend support
+        }
+      );
+
+
+      if (response) {
+        toast.success("Poll Created Successfully!");
+        clearData();
+      }
+    } catch (error: any) {
+      if (error.response && error.response.data.message) {
+        toast.error(error.response.data.message)
+        handleValueChange("error", error.response.data.message)
+      } else {
+        handleValueChange("error", "Something went wrong. Please try again");
+      }
+    }
   }
 
   return (

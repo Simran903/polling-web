@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import UserProvider from "@/context/UserContext";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Polling App",
@@ -16,8 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <UserProvider>
-        {children}
+          {children}
         </UserProvider>
+        <ToastContainer />
       </body>
     </html>
   );
