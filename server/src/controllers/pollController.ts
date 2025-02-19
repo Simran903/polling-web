@@ -365,44 +365,48 @@ export const bookmarkPoll = async (req: AuthRequest, res: Response): Promise<Res
   }
 };
 
-// export const getBookmarkedPolls = async (req: AuthRequest, res: Response): Promise<void> => {
-//   const userId: string | undefined = req.user?.id;
+export const getBookmarkedPolls = async (req: AuthRequest, res: Response): Promise<Response> => {
+  const userId: string | undefined = req.user?.id;
 
-//   try {
-//     const user = await User.findById(userId).populate({
-//       path: "bookmarkedPolls",
-//       populate: {
-//         path: "creator",
-//         select: "username profileImageUrl",
-//       }
-//     });
+  try {
+    const user = await User.findById(userId).populate({
+      path: "bookmarkedPolls",
+      populate: [
+        {
+          path: "creator",
+          select: "username profileImageUrl",
+        },
+        {
+          path: "voters",
+        },
+      ],
+    });
 
-//     if (!user) {
-//       res.status(404).json({
-//         message: "User not found"
-//       });
-//       return;
-//     }
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
 
-//     const bookmarkedPolls = user.bookmarkedPolls;
+    const bookmarkedPolls: any[] | undefined = user?.bookmarkedPolls;
 
-//     const updatedPolls = bookmarkedPolls.map((poll: PollDocument) => {
-//       const userHasVoted: boolean = poll.voters.some((voterId: any) => voterId.equals(userId));
-//       return {
-//         ...poll.toObject(),
-//         userHasVoted,
-//       };
-//     });
+    const updatedPolls = bookmarkedPolls?.map((poll: any) => {
+      const userHasVoted: boolean = poll?.voters?.some((voterId: any) => voterId.equals(userId));
+      return {
+        ...poll.toObject(),
+        userHasVoted,
+      };
+    });
 
-//     res.status(200).json({ bookmarkedPolls: updatedPolls });
+    return res.status(200).json({ bookmarkedPolls: updatedPolls });
 
-//   } catch (err: any) {
-//     res.status(500).json({
-//       message: "Error fetching polls",
-//       error: err.message,
-//     });
-//   }
-// }
+  } catch (err: any) {
+    return res.status(500).json({
+      message: "Error fetching polls",
+      error: err.message,
+    });
+  }
+}
 
 export const deletePoll = async (req: AuthRequest, res: Response): Promise<Response> => {
 
