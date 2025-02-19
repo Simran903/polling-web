@@ -14,11 +14,12 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*",
+    origin: "http://localhost:3000", // Allow only your frontend
+    credentials: true, // Allow cookies and authentication
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
-)
+);
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 5000;
