@@ -91,77 +91,79 @@ export const signinUser = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
-) => {
+): Promise<Response> => {
+  
   const { email, password }: { email: string; password: string } = req.body;
 
-  // Validation: check for missing fields
-  if (!email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
+   // Validation: check for missing fields
+   if (!email || !password) {
+     return res.status(400).json({ message: "All fields are required" });
+   }
 
-  try {
-    const user = await User.findOne({ email });
+   try {
+     const user = await User.findOne({ email });
 
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(400).json({
-        message: "Invalid credentials",
-      });
-    }
+     if (!user || !(await user.comparePassword(password))) {
+       return res.status(400).json({
+         message: "Invalid credentials",
+       });
+     }
 
-    res.status(200).json({
-      id: user._id,
-      user: {
-        ...user.toObject(),
-        totalPollsCreated: 0,
-        totalPollsVotes: 0,
-        totalPollsBookmarked: 0,
-      },
-      token: generateToken(user._id as any),
-    });
-  } catch (err: any) {
-    console.error("Error signing in:", err);
-    return res.status(500).json({
-      message: "Error signing in",
-      error:
-        process.env.NODE_ENV === "production"
-          ? "Internal Server Error"
-          : err.message,
-    });
-  }
+     return res.status(200).json({
+       id: user._id.toString(),
+       user: {
+         ...user.toObject(),
+         totalPollsCreated: 0,
+         totalPollsVotes: 0,
+         totalPollsBookmarked: 0,
+       },
+       token: generateToken(user._id.toString()),
+     });
+   } catch (err) {
+     console.error("Error signing in:", err);
+     return res.status(500).json({
+       message: "Error signing in",
+       error:
+         process.env.NODE_ENV === "production"
+           ? "Internal Server Error"
+           : (err as Error).message,
+     });
+   }
 };
 
 // Get user info
 export const getUserInfo = async (
   req: AuthRequest,
-  res: Response,
-) => {
+  res: Response
+): Promise<Response> => {
 
-  try {
-    const user = await User.findById(req?.user?.id).select("-password");
+   try {
+     const user = await User.findById(req?.user?.id).select("-password");
 
-    if (!user) {
-      res.status(404).json({
-        message: "User not found"
-      })
-    }
+     if (!user) {
+       return res.status(404).json({
+         message:"User not found"
+       })
+     }
 
-    const userInfo = {
-      ...user?.toObject(),
-      totalPollsCreated: 0,
-      totalPollsVotes: 0,
-      totalPollsBookmarked: 0,
-    }
+     const userInfo = {
+       ...user?.toObject(),
+       totalPollsCreated:user?.totalPollsCreated ??0, 
+       totalPollsVotes:user?.totalPollsVotes ??0 ,
+       totalPollsBookmarked:user?.totalPollsBookmarked ??0 ,
+     };
+     
+     
+     return res.status(200).json(userInfo);
 
-    res.status(200).json(userInfo);
-
-  } catch (err: unknown) {
-    console.error("Error fetching user:", err);
-    return res.status(500).json({
-      message: "Error fetching user",
-      error:
-        process.env.NODE_ENV === "production"
-          ? "Internal Server Error"
-          : (err as Error).message,
-    });
-  }
+   } catch (err) {
+     console.error("Error fetching user:", err);
+     return res.status(500).json({
+       message:"Error fetching user",
+       error:
+         process.env.NODE_ENV === "production"
+           ? "Internal Server Error"
+           : (err as Error).message ,
+     });
+   }
 };

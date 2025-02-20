@@ -9,6 +9,9 @@ export interface IUser extends Document {
   password: string;
   profileImageUrl?: string;
   bookmarkedPolls: mongoose.Types.ObjectId[];
+  totalPollsCreated: number;
+  totalPollsVotes: number;
+  totalPollsBookmarked: number;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -30,7 +33,7 @@ const UserSchema = new Schema<IUser>(
     },
     profileImageUrl: {
       type: String,
-      default: null, 
+      default: null,
     },
     bookmarkedPolls: [
       {
@@ -38,6 +41,18 @@ const UserSchema = new Schema<IUser>(
         ref: "Poll",
       },
     ],
+    totalPollsCreated: {
+      type: Number,
+      default: 0,
+    },
+    totalPollsVotes: {
+      type: Number,
+      default: 0,
+    },
+    totalPollsBookmarked: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

@@ -23,8 +23,12 @@ interface PollDocument {
 }
 
 export const createPoll = async (req: Request, res: Response): Promise<Response> => {
-  const { question, type, options, creatorId }:
-    { question: string; type: string; options?: string[]; creatorId: string } = req.body;
+  const { question, type, options, creatorId }: { 
+    question: string; 
+    type: string; 
+    options?: string[]; 
+    creatorId: string; 
+  } = req.body;
 
   if (!question || !type || !creatorId) {
     return res.status(400).json({
@@ -78,12 +82,16 @@ export const createPoll = async (req: Request, res: Response): Promise<Response>
         });
     }
 
+    // ✅ Create Poll
     const newPoll = await Poll.create({
       question,
       type,
       options: processedOptions,
       creator: creatorId,
     });
+
+    // ✅ Increment totalPollsCreated for the user
+    await User.findByIdAndUpdate(creatorId, { $inc: { totalPollsCreated: 1 } });
 
     return res.status(201).json(newPoll);
 
