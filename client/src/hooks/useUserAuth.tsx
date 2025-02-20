@@ -46,7 +46,7 @@ export const useUserAuth = () => {
     return () => {
       isMounted = false;
     };
-  }, [updateUser, user, clearUser]);
+  }, []);
 
   return { user };
 };

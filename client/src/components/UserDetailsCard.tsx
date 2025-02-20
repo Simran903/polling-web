@@ -26,7 +26,7 @@ const UserDetailsCard: FC<UserDetailsCardProps> = ({
             src={profileImageUrl}
             alt='Profile Image'
             className='w-20 h-20 rounded-full' /> :
-            <CharAvatar username={username} width='w-20' height='h-20' style='text-xl' />
+            <CharAvatar username={username} width='w-20' height='h-20' style='text-4xl' />
           }
         </div>
       </div>

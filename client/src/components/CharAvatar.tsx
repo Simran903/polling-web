@@ -10,7 +10,7 @@ interface CharAvatarProps {
 
 const CharAvatar: FC<CharAvatarProps> = ({ username, width, height, style }) => {
   return (
-    <div className={`${width || 'w-12'} ${height || 'h-12'} ${style || ''} flex items-center justify-center rounded-full font-medium bg-gray-100`}>
+    <div className={`${width || 'w-12'} ${height || 'h-12'} ${style || ''} flex items-center justify-center rounded-full font-bold bg-surface-a10`}>
       {getInitials(username || "")}
     </div>
   )
