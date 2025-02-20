@@ -11,8 +11,8 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
 
-  const { user } = useContext(UserContext)
-
+  const { user }: any = useContext(UserContext)
+  
   return (
     <div className=''>
       <Navbar />

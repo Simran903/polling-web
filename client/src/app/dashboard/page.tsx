@@ -1,19 +1,17 @@
 "use client";
-import React from 'react'
-import DashboardLayout from './DashboardLayout'
-import { useUserAuth } from '@/hooks/useUserAuth'
+import React from 'react';
+import DashboardLayout from './DashboardLayout';
+import { useUserAuth } from '@/hooks/useUserAuth';
 
 const Dashboard = () => {
-
-  // useUserAuth();
+  
+  useUserAuth();
 
   return (
-    <div>
-      <DashboardLayout>
-        <div className="">Home</div>
-      </DashboardLayout>
-    </div>
-  )
-}
+    <DashboardLayout>
+      <div className="">Home</div>
+    </DashboardLayout>
+  );
+};
 
-export default Dashboard
+export default Dashboard;

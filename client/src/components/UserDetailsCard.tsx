@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import StatsInfo from './StatsInfo';
+import CharAvatar from './CharAvatar';
 
 interface UserDetailsCardProps {
   profileImageUrl?: string;
@@ -16,16 +17,17 @@ const UserDetailsCard: FC<UserDetailsCardProps> = ({
   totalPollsCreated,
   totalPollsBookmarked,
 }) => {
-  // console.log(profileImageUrl);
 
   return (
     <div className='bg-surface-a10 rounded-lg mt-16 overflow-hidden p-5'>
       <div className="w-full h-32 bg-cover flex justify-center bg-primary-a0/80 relative">
         <div className="absolute -bottom-10 rounded-full overflow-hidden border-2 border-primary-a0">
-          <img
-            src={profileImageUrl || "https://plus.unsplash.com/premium_photo-1690407617686-d449aa2aad3c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzd8fHBlcnNvbnxlbnwwfHwwfHx8MA%3D%3D"}
+          {profileImageUrl ? <img
+            src={profileImageUrl}
             alt='Profile Image'
-            className='w-20 h-20 rounded-full' />
+            className='w-20 h-20 rounded-full' /> :
+            <CharAvatar username={username} width='w-20' height='h-20' style='text-xl' />
+          }
         </div>
       </div>
       <div className="mt-12 px-5">

@@ -68,7 +68,7 @@ const SignUp = () => {
       });
 
       const token = response?.data?.token;
-      console.log(token);
+
       if (response.status === 200 || 201) {
         localStorage.setItem("token", token);
         router.push("/dashboard");

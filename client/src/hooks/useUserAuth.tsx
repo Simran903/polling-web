@@ -18,21 +18,24 @@ export const useUserAuth = () => {
       return;
     }
 
-    if (user) return; // Prevent unnecessary API calls
-
     let isMounted = true;
 
     const fetchUserInfo = async () => {
       try {
-        const response = await axiosClient.get(API_PATHS.AUTH.GET_USER_INFO);
+        const response = await axiosClient.get(API_PATHS.AUTH.GET_USER_INFO, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         if (isMounted && response.data) {
           updateUser(response.data);
         }
       } catch (error) {
-        console.log("Failed to fetch user info", error);
+        console.error("Failed to fetch user info", error);
         if (isMounted) {
           clearUser();
-          localStorage.removeItem("accessToken");
+          localStorage.removeItem("token");
           router.push("/auth/signin");
         }
       }
@@ -43,5 +46,7 @@ export const useUserAuth = () => {
     return () => {
       isMounted = false;
     };
-  }, [user, updateUser, clearUser]);
+  }, [updateUser, user, clearUser]);
+
+  return { user };
 };
