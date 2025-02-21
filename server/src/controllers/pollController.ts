@@ -64,7 +64,7 @@ export const createPoll = async (req: Request, res: Response): Promise<Response>
         break;
 
       case "image-based":
-        if (!options || options.length < 2) {
+        if (!options || options.length <= 2) {
           return res
             .status(400)
             .json({
