@@ -87,8 +87,6 @@ const CreatePoll: FC = () => {
     return optionArr as string[];
   };
 
-  console.log(pollData.imageOptions);
-
   const getOptions = async () => {
     switch (pollData.type) {
       case "single-choice":

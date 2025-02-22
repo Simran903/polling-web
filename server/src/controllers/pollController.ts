@@ -64,8 +64,6 @@ export const createPoll = async (req: Request, res: Response): Promise<Response>
         break;
 
         case "image-based":
-          console.log("Received image options:", options); // Debugging log
-        
           if (!options || options.length < 2) {
             return res.status(400).json({
               message: "Image-based poll must have at least two image URLs.",
