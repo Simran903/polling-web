@@ -87,6 +87,8 @@ const CreatePoll: FC = () => {
     return optionArr as string[];
   };
 
+  console.log(pollData.imageOptions);
+
   const getOptions = async () => {
     switch (pollData.type) {
       case "single-choice":
@@ -112,7 +114,7 @@ const CreatePoll: FC = () => {
       handleValueChange("error", "Enter at least two options");
       return;
     }
-
+    
     if (type === "image-based" && imageOptions.length < 2) {
       handleValueChange("error", "Enter at least two images");
       return;

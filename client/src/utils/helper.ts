@@ -8,3 +8,7 @@ export const getInitials = (name: string) => {
   let initials = name[0].toUpperCase();
   return initials;
 }
+
+export const getPollBookmarked = (pollId: string, userBookmarks: string[] = []): boolean => {
+  return userBookmarks.includes(pollId);
+}
