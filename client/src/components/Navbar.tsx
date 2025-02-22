@@ -5,7 +5,7 @@ import SideMenu from './SideMenu'
 const Navbar = () => {
   const [openSideMenu, setOpenSideMenu] = useState(false)
   return (
-    <div className='flex gap-5 border-b border-surface-a30 bg-surface-a10 backdrop-blur-[2px] p-4 top-0 z-30'>
+    <div className='flex gap-5 border-b border-surface-a30 bg-surface-a10 backdrop-blur-[2px] p-4 top-0 z-30 sticky'>
 
       <button
         className='block lg:hidden'
