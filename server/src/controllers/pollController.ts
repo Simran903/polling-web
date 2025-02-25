@@ -107,7 +107,7 @@ export const getAllPolls = async (req: Request, res: Response): Promise<Response
   try {
     const { type, creatorId, page = 1, limit = 10 } = req.query;
 
-    const userId = req.body
+    const {userId} = req.body
 
     const filter: any = {};
     if (type) filter.type = type;
